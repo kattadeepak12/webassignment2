@@ -1,0 +1,152 @@
+<!-- @copyright Deepak Katta -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+        crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css"> -->
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgb(104, 183, 248);
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: rgb(211, 243, 159);
+        }
+
+        .active {
+            background-color: #4CAF50;
+        }
+    </style>
+
+</head>
+
+<body>
+    <ul>
+        <li>
+            <a href="index.html">Home</a>
+        </li>
+        <li>
+            <a href="course.html">Course</a>
+        </li>
+        <li>
+            <a href="student.html">Student</a>
+        </li>
+        <li>
+            <a href="teacher.html">Teacher</a>
+        </li>
+        <li>
+            <a href="subject.html">Subject</a>
+        </li>
+    </ul>
+    <h1 align="center">Add Teacher Here !</h1>
+
+    <div id="root" class="container" style="width: 400px">
+        <div class="form-group">
+            <label>Teacher Name:</label>
+            <input v-model="teacherName" type="text" class="form-control" placeholder="Teacher Name">
+        </div>
+        <div class="form-group">
+            <label>Available Subjects:</label>
+            <select v-model="subjectId">
+                <option v-for="subject in subjectArray" v-bind:value="subject.id">
+                    {{ subject.subjectname }}
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Available Courses:</label>
+            <select v-model="courseId">
+                <option v-for="course in courseArray" v-bind:value="course.id">
+                    {{ course.coursename }}
+                </option>
+            </select>
+        </div>
+        <button v-on:click="addTeacher" class="btn btn-default">ADD</button>
+    </div>
+
+    <script>
+        var root = new Vue({
+            el: '#root',
+
+            data: {
+                subjectArray: [],
+                courseArray: [],
+                courseId: '',
+                subjectId: '',
+                teacherName: '',
+            },
+            created: function () {
+                this.subjectList(), this.courseList()
+            },
+            methods: {
+                addTeacher() {
+                    axios.post('http://localhost:9000/teachers', {
+                        teachername: this.teacherName,
+                        courseId: this.courseId,
+                        subjectId: this.subjectId
+                    })
+                        .then(function (response) {
+                            console.log(response);
+                            if (response.status == 200) {
+                                alert("Teacher Added!")
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    this.teacherName = '';
+                },
+
+                courseList() {
+                    axios.get("http://localhost:9000/courses")
+                        .then(function (response) {
+                            root.courseArray = response.data;
+                            console.log(root.courseArray)
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                },
+                subjectList() {
+                    axios.get("http://localhost:9000/subjects")
+                        .then(function (response) {
+                            root.subjectArray = response.data;
+                            console.log(root.subjectArray)
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                }
+            }
+        }) 
+    </script>
+
+</body>
+
+</html>

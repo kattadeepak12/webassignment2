@@ -1,0 +1,135 @@
+<!-- @copyright Deepak Katta -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+        crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        h1 {
+            text-align: center
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgb(104, 183, 248);
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: rgb(211, 243, 159);
+        }
+
+        .active {
+            background-color: rgb(196, 243, 65);
+        }
+    </style>
+
+</head>
+
+<body>
+    <ul>
+        <!-- class="active"
+                <li><a  href="">Home</a></li> -->
+        <li>
+            <a href="index.html">Home</a>
+        </li>
+        <li>
+            <a href="student.html">Student</a>
+        </li>
+        <li>
+            <a href="subject.html">Subject</a>
+        </li>
+        <li>
+            <a href="teacher.html">Teacher</a>
+        </li>
+        <li>
+            <a href="addCourse.html">Add New Course</a>
+        </li>
+        <h5 style="text-align:center; margin-top: 10px; margin-right: 320px">
+            SCHOOL MANGEMENT SYSTEM
+        </h5>
+    </ul>
+    <br>
+    <br>
+    <div id="root">
+        <div class="row" align="center">
+            <div v-for="course in courseArray" class="card text-black border border-secondary" style="margin-left: 240px">
+                <div class="card-header alert alert-warning border border-secondary">
+                    <h4 align="center">
+                        Course : {{course.coursename}}
+                    </h4>
+                </div>
+                <div class="row">
+                    <div class="col m-3 p-3">
+                        <b>Course id : {{course.id}}</b>
+                    </div>
+                </div>
+                <form action="batches.html">
+                    <input type="hidden" id="courseid" value="course.id">
+                    <input type="submit" value="All Batches">
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log("-----====")
+        var root = new Vue({
+            el: '#root',
+
+            data: {
+                courseArray: [],
+                batchArray: [],
+                check: true,
+
+            },
+            created: function () {
+                console.log("------------------hello")
+                this.courseList()
+            },
+            methods: {
+                courseList() {
+                    axios.get("http://localhost:9000/courses")
+                        .then(function (response) {
+                            root.courseArray = response.data;
+                            console.log(root.courseArray)
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+
+                },
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>
